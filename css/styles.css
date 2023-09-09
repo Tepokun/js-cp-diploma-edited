@@ -15,6 +15,7 @@ body {
   background-size: cover;
   background-attachment: fixed;
   background-position: right;
+  min-width: 320px;
 }
 
 .page-header {
@@ -103,16 +104,12 @@ body {
 }
 .movie .movie__poster {
   position: relative;
-  width: 12.5rem;
-  height: 17.5rem;
   /*    left: 1.5rem;
       top: -1.5rem;*/
 }
 .movie .movie__poster .movie__poster-image {
   position: relative;
   top: -3rem;
-  width: 12.5rem;
-  height: 17.5rem;
 }
 .movie .movie__poster::after {
   content: '';
@@ -170,6 +167,51 @@ body {
   text-decoration: none;
   font-size: 1.5rem;
 }
+
+
+@media (min-width: 481px) {
+  .movie .movie__poster {
+    width: 12.5rem;
+    height: 17.5rem;
+  }
+
+  .movie .movie__poster .movie__poster-image {
+    width: 12.5rem;
+    height: 17.5rem;
+  }
+}
+
+
+@media (max-width: 480px){
+  .movie .movie__poster .movie__poster-image {
+    width: 100%;
+  }
+
+  .movie__info{
+    flex-direction: column;
+  }
+
+  .movie__data{
+    margin-bottom:  1rem;
+  }
+
+  .page-nav .page-nav__day {
+    flex-basis: calc(100% / 5);
+  }
+
+  .page-nav .page-nav__day_chosen {
+    flex-grow: 0.9;
+  }
+
+  .page-nav {
+    flex-wrap: wrap;
+  }
+
+  .page-nav__day{
+    flex-basis: calc(100% / 6);
+  }
+}
+
 
 /* ~~~~~~~~~~~~ Кинозал ~~~~~~~~~~~~ */
 .acceptin-button {
@@ -236,6 +278,7 @@ body {
   background-color: #171D24;
   padding: 1.5rem 3rem 1.5rem;
 }
+
 
 .conf-step__wrapper {
   font-size: 0;
@@ -312,19 +355,27 @@ body {
   margin-top: 1rem;
 }
 
+@media (max-width: 330px) {
+  .conf-step {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+
 /* ~~~~~~~~~~~~ Билет ~~~~~~~~~~~~ */
-.tichet__check, .ticket__info-wrapper {
+.ticket__check, .ticket__info-wrapper {
   padding-left: 1.5rem;
   padding-right: 1.5rem;
   background-color: rgba(241, 235, 230, 0.95);
 }
 
-.tichet__check {
+.ticket__check {
   position: relative;
   padding-top: 2.5rem;
   padding-bottom: 2.5rem;
 }
-.tichet__check::before {
+.ticket__check::before {
   content: '';
   display: block;
   position: absolute;
@@ -335,7 +386,7 @@ body {
   background-image: url(../i/border-top.png);
   background-size: 10px 3px;
 }
-.tichet__check::after {
+.ticket__check::after {
   content: '';
   display: block;
   position: absolute;
@@ -411,14 +462,15 @@ body {
   height: 20rem;
 }
 
-@media screen and (min-width: 479px) {
+
+@media (min-width: 481px) {
   .page-nav .page-nav__day {
     padding: 1rem 2rem;
   }
 }
-@media screen and (min-width: 990px) {
+@media (min-width: 920px) {
   .page-header, nav, main {
-    width: 990px;
+    width: 920px;
     margin: auto;
   }
 
@@ -433,6 +485,8 @@ body {
 
 /*================================================================*/
 
+
+
 .movie .movie-seances__hall .acceptin-button-disabled {
  background-color: #888888;
  pointer-events: none
@@ -442,5 +496,3 @@ body {
   background-color: #888888;
   pointer-events: none
  }
-
-
