@@ -127,16 +127,21 @@ function updateHtmlHall(serverResponse) {
       }
     }
 
+    // Если есть выбранные места в зале
     if (selectedChairs.length) {
+      // Запишем в хранилище выбранные места в зале
       setJSON("data-of-the-selected-chairs", selectedChairs);
 
+      // Конфигурация (разметка) выбранного зала
       const configSelectedHallHtml = document
         .querySelector(".conf-step__wrapper")
         ?.innerHTML.trim();
 
+      // Запишем выбранные места в конфиг залов в Хранилище
       configHalls[dataOfTheSelectedSeance.hallId] = configSelectedHallHtml;
       setJSON("config-halls", configHalls);
 
+      // Подготовим пре-конфигурацию залов с "занятыми" (оплаченными) местами
       confStepChair.forEach((element) => {
         element.classList.replace("conf-step__chair_selected", "conf-step__chair_taken");
       });
@@ -144,11 +149,14 @@ function updateHtmlHall(serverResponse) {
       const configSelectedHallTaken = document.querySelector(".conf-step__wrapper")?.innerHTML.trim();
       const configHallsTaken = getJSON("config-halls");
 
+      // Запишем занятые места в отдельный пре-конфиг залов в Хранилище, после оплаты он отправится на сервер (отдельный, чтобы при нажатии кнопки "Назад" не показываались места "taken", т.к. они еще не оплачены)
       configHallsTaken[dataOfTheSelectedSeance.hallId] = configSelectedHallTaken;
       setJSON("pre-config-halls-paid-seats", configHallsTaken);
 
+      // Сформируем набор итоговых данных для заполнения билета на следующих страницах
       const dataOfTheSelectedChairs = getJSON("data-of-the-selected-chairs");
 
+      // Считаем общую стоимость билетов и формируем строку выбранных мест
       const arrRowPlace = [];
       let totalCost = 0;
 
