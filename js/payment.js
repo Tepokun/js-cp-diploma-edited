@@ -1,38 +1,32 @@
-const paymentInfo = localStorage.getItem('seance-data');
-const parsedSelectedChairs = JSON.parse(paymentInfo);
+document.addEventListener("DOMContentLoaded", () => {
 
-const ticketTitle = document.querySelector('.ticket__title');
-ticketTitle.textContent = parsedSelectedChairs.filmName;
+  const ticketDetails = getJSON("ticket-details");
+  const ticketInfoWrapper = document.querySelector(".ticket__info-wrapper");
+  ticketInfoWrapper.innerHTML = "";
 
-const ticketChairs = document.querySelector('.ticket__chairs');
-const ticketHall = document.querySelector('.ticket__hall');
-ticketHall.textContent = parsedSelectedChairs.hallName;
+  const textHtml = `
+      <p class="ticket__info">На фильм: <span class="ticket__details ticket__title">${ticketDetails.filmName}</span></p>
+      <p class="ticket__info">Ряд/Место: <span class="ticket__details ticket__chairs">${ticketDetails.strRowPlace}</span></p>
+      <p class="ticket__info">В зале: <span class="ticket__details ticket__hall">${ticketDetails.hallNameNumber}</span></p>
+      <p class="ticket__info">Начало сеанса: <span class="ticket__details ticket__start">${ticketDetails.seanceTime} - ${ticketDetails.seanceDay}</span></p>
+      <p class="ticket__info">Стоимость: <span class="ticket__details ticket__cost">${ticketDetails.totalCost}</span> рублей</p>
+      <button class="acceptin-button">Получить код бронирования</button>
+      <p class="ticket__hint">После оплаты билет будет доступен в этом окне, а также придёт вам на почту. Покажите QR-код нашему контроллёру у входа в зал.</p>
+      <p class="ticket__hint">Приятного просмотра!</p>
+    `;
+  ticketInfoWrapper.insertAdjacentHTML("beforeend", textHtml);
 
-const seanceDate = new Date(parsedSelectedChairs.seanceTimeStamp * 1000);
-const fullDate = seanceDate.toLocaleString("ru-RU", {
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric',
+  const acceptinButton = document.querySelector(".acceptin-button");
+  acceptinButton?.addEventListener("click", (event) => {
+
+    const hallsConfigurationObj = getJSON("pre-config-halls-paid-seats");
+    const hallConfiguration = hallsConfigurationObj[ticketDetails.hallId];
+    const requestBodyString = `event=sale_add&timestamp=${ticketDetails.seanceTimeStampInSec}&hallId=${ticketDetails.hallId}&seanceId=${ticketDetails.seanceId}&hallConfiguration=${hallConfiguration}`;
+
+    createRequest(requestBodyString, "PAYMENT", updateHtmlPayment, true);
+  });
+
+  function updateHtmlPayment(serverResponse) {
+    window.location.href = "ticket.html";
+  }
 });
-const ticketStart = document.querySelector('.ticket__start');
-ticketStart.textContent = `${parsedSelectedChairs.seanceTime}, ${fullDate}`;
-
-const places = parsedSelectedChairs.selectedPlaces;
-const takenChairs = places.map(place => `${place.row}/${place.place}`).join(', ');
-ticketChairs.textContent = takenChairs;
-
-let price = 0;
-
-for (const place of places) {
-    price += place.type === 'standart' ? +parsedSelectedChairs.hallPriceStandart : 
-             (place.type === 'vip' ? +parsedSelectedChairs.hallPriceVip : 0);
-}
-
-const ticketCost = document.querySelector('.ticket__cost');
-ticketCost.textContent = `${price}`;
-
-let newHallConfig = parsedSelectedChairs.hallConfig.replace(/selected/g, "taken");
-parsedSelectedChairs.hallConfig = newHallConfig;
-parsedSelectedChairs.takenChairs = takenChairs;
-
-localStorage.setItem('seance-data', JSON.stringify(parsedSelectedChairs));
